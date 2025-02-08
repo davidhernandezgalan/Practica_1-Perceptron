@@ -58,3 +58,39 @@ class PerceptronGUI(tk.Tk):
 
         # Manejo de cierre
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    # Marcar puntos en el hiperplano
+    def add_point(self, event):
+        if event.inaxes:
+            x, y = round(event.xdata), round(event.ydata)
+            self.points.append((x, y))
+            self.ax.plot(x, y, 'ko', markersize=12)
+            self.canvas.draw()
+
+    # Clasificar puntos y dibujar hiperplano
+    def classify_points(self):
+        try:
+            w1 = float(self.w1_entry.get())
+            w2 = float(self.w2_entry.get())
+            bias = float(self.bias_entry.get())
+        except ValueError:
+            messagebox.showwarning("Error para continuar", "Ingresa los valores (Números) para los pesos y el bias.")
+            return
+
+        self.weights = (w1, w2, bias)
+
+        # Redibujar puntos y clasificar
+        self.ax.clear()
+        self.ax.set_xlim(-10, 10)
+        self.ax.set_ylim(-10, 10)
+        self.ax.set_xticks(np.arange(-10, 11, 1))
+        self.ax.set_yticks(np.arange(-10, 11, 1))
+        self.ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+        self.ax.axhline(0, color='black', linewidth=0.5)
+        self.ax.axvline(0, color='black', linewidth=0.5)
+
+        # Rojo y azul para las dos clases
+        for x, y in self.points:
+            result = w1 * x + w2 * y + bias
+            color = 'bo' if result >= 0 else 'ro'
+            self.ax.plot(x, y, color, markersize=12)
