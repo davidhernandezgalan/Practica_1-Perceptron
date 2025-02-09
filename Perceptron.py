@@ -94,3 +94,22 @@ class PerceptronGUI(tk.Tk):
             result = w1 * x + w2 * y + bias
             color = 'bo' if result >= 0 else 'ro'
             self.ax.plot(x, y, color, markersize=12)
+
+        # Dibujar hiperplano
+        x_vals = np.array(self.ax.get_xlim())
+        if w2 != 0:  # Evitar división por cero
+            y_vals = - (w1 / w2) * x_vals - (bias / w2)
+            self.ax.plot(x_vals, y_vals, 'm--')  # La linea del hiperplano
+
+        self.canvas.draw()
+
+    # Cerrar ventana
+    def on_closing(self):
+        plt.close(self.figure)
+        self.destroy()
+
+
+# Main de la aplicación para su funcionamiento
+if __name__ == "__main__":
+    app = PerceptronGUI()
+    app.mainloop()
